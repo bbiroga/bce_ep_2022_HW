@@ -1,0 +1,8 @@
+pandas
+black
+sklearn
+numpy
+networkx
+jupyter
+matplotlib
+seaborn
