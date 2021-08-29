@@ -6,3 +6,4 @@ networkx
 jupyter
 matplotlib
 seaborn
+ipykernel
