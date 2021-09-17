@@ -45,7 +45,7 @@ def plot_education_against_tv(adult_data: pd.DataFrame) -> None:
     Source for combined barchart for sns:
     https://python.tutorialink.com/how-can-i-plot-a-secondary-y-axis-with-seaborns-barplot/
     """
-    width_scale = 0.45
+    width_scale = 0.5
 
     plot_series = adult_data.groupby("education").agg(
         {"target_encoded": ["mean", "count"]}
@@ -63,3 +63,12 @@ def plot_education_against_tv(adult_data: pd.DataFrame) -> None:
     fig.suptitle("Education against Income")
     ax.set_ylabel("Mean tv per group")
     ax.set_xlabel("Education level")
+    rotate_ax_ticklabels(ax)
+
+    return fig, ax, ax2
+
+
+def rotate_ax_ticklabels(ax):
+    "Rotate xticklabels by 45 deg"
+    for tick in ax.get_xticklabels():
+        tick.set_rotation(45)
