@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import seaborn as sns
 
 COLNAMES = [
@@ -29,9 +30,12 @@ def read_data() -> pd.DataFrame:
     return adult_data
 
 
-def offset_bars_on_secondary_axis(ax, width_scale: float):
-    print(type(ax))
-    for bar in ax.containers[0]:
+def offset_bars_on_double_barplot(ax_1, ax_2, width_scale: float):
+    """For double barchart use this to align bars"""
+    for bar in ax_1.containers[0]:
+        bar.set_width(bar.get_width() * width_scale)
+
+    for bar in ax_2.containers[0]:
         x = bar.get_x()
         w = bar.get_width()
         bar.set_x(x + w * (1 - width_scale))
@@ -53,19 +57,30 @@ def plot_education_against_tv(adult_data: pd.DataFrame) -> None:
     plot_series.columns = ["mean", "count"]
     plot_series.sort_values(by="mean", inplace=True)
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
-    sns.barplot(x=plot_series.index, y="mean", ax=ax, data=plot_series, color="blue")
-    for bar in ax.containers[0]:
-        bar.set_width(bar.get_width() * width_scale)
+    sns.barplot(
+        x=plot_series.index, y="mean", ax=ax, data=plot_series, color="blue", label="TV"
+    )
     ax2 = ax.twinx()
-    sns.barplot(x=plot_series.index, y="count", ax=ax2, data=plot_series, color="grey")
-    offset_bars_on_secondary_axis(ax2, width_scale)
+    sns.barplot(
+        x=plot_series.index,
+        y="count",
+        ax=ax2,
+        data=plot_series,
+        color="grey",
+        label="COUNT",
+    )
+    offset_bars_on_double_barplot(ax, ax2, width_scale)
 
     fig.suptitle("Education against Income")
     ax.set_ylabel("Mean tv per group")
     ax.set_xlabel("Education level")
     rotate_ax_ticklabels(ax)
 
-    return fig, ax, ax2
+    # create legend
+    grey_patch = mpatches.Patch(color="grey", label="Population size")
+    blue_patch = mpatches.Patch(color="blue", label="Income >50k $")
+
+    plt.legend(handles=[blue_patch, grey_patch], loc=1)
 
 
 def rotate_ax_ticklabels(ax):
