@@ -9,7 +9,7 @@ from sklearn.datasets import load_iris
 
 
 def load_iris_dataset() -> pd.DataFrame:
-    """load and organize the iris dataset to a useable format"""
+    """load and organize the iris dataset to a usable format"""
     iris_data = load_iris()
     iris_df = pd.DataFrame(data=iris_data["data"], columns=iris_data["feature_names"])
     iris_df["species"] = iris_data["target"]
