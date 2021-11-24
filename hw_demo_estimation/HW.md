@@ -33,5 +33,14 @@ You can get these regardless of the rest of your points
   * Structure your code well with functions
   * upload your solution to Gihub, and the only thing you have to send me is a link to a gh repo that contains the code
     
+
+### Additional instructions
+
+Make your life easier, and do the stuff for the extra points :)\
+Make sure your charts are nice! Colors, title, scales, axislabels all matter\
+Be sceptical about what you get! Make sure you do NOT include information that you shoulld not know in your estimations\
+Please ask your questions on a forum that everyone can see, but if you need a quick answer, throw me an email at 
+`karpatika92@gmail.com`
+
 #### Good Luck!
     
