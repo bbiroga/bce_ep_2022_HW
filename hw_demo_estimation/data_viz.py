@@ -50,14 +50,14 @@ def plot_node_degree_by_gender(nodes, G):
     sns.lineplot(data=plot_df, x="AGE", y="degree", hue="gender")
 
 
-def plot_age_relations_heatmap(edges_w_featuers):
+def plot_age_relations_heatmap(edges_w_features):
     """Plot a heatmap that represents the distribution of edges"""
     # TODO: check what happpens without logging
     # TODO: instead of logging check what happens if you normalize with the row sum
     #  make sure you figure out an interpretation of that as well!
     # TODO: separate these charts by gender as well
     # TODO: column names could be nicer
-    plot_df = edges_w_featuers.groupby(["gender_x", "gender_y", "AGE_x", "AGE_y"]).agg(
+    plot_df = edges_w_features.groupby(["gender_x", "gender_y", "AGE_x", "AGE_y"]).agg(
         {"smaller_id": "count"}
     )
     plot_df_w_w = plot_df.loc[(0, 0)].reset_index()

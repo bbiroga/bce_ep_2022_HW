@@ -1,6 +1,7 @@
 """Functions to load and filter the network"""
 
 import pandas as pd
+import numpy as np
 
 # notice that  I use all caps for module level strings
 # it may be nicer to export this to a csv, but life is sometimes too short to be tidy
@@ -64,6 +65,9 @@ COLUMNS_STR = """    user_id
     companies_brands
     more"""
 COLUMNS_LIST = [col.strip() for col in COLUMNS_STR.split("\n")]
+
+# reproducibility matters!
+np.random.seed(42)
 
 
 def select_relevant_profiles(all_profiles):
@@ -134,4 +138,17 @@ def load_and_select_profiles_and_edges():
         selected_profiles["user_id"].isin(nodes_with_edges)
     ]
     selected_profiles["AGE"] = selected_profiles["AGE"].clip(upper=50)
+    selected_profiles = remove_test_set_gender_and_age(selected_profiles)
     return selected_profiles, undirected_edges
+
+
+def remove_test_set_gender_and_age(nodes):
+    """Remove the gender feature from a subset of the nodes for estimation"""
+    # todo: the 40k  random can be adjusted if youre working with a subset
+    test_profiles = np.random.choice(nodes["user_id"].unique(), 40000, replace=False)
+    nodes["TRAIN_TEST"] = "TRAIN"
+    test_condition = nodes["user_id"].isin(test_profiles)
+    nodes.loc[test_condition, ["AGE", "gender"]] = np.nan
+    nodes.loc[test_condition, ["TRAIN_TEST"]] = "TEST"
+
+    return nodes
