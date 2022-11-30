@@ -11,11 +11,8 @@ original article: https://ericdongyx.github.io/papers/KDD14-Dong-et-al-WhoAmI-de
 20 points is the max points, but 25 is achievable! The scoring is designed so that even people with little python 
 experience can achiave at least 10
 
-* 10 points:\
-  Create an estimation of gender on the test set! Count the number of male and female friends of each node,
-and predict accordingly
 * 15 points:\
-  recreate the chart 3 - 6 we discussed in class from the article. Make sure you write some analysis for
+  recreate the chart 3,5,6 we discussed in class from the article. Make sure you write some analysis for
 each chart. There is no embeddedness function in NetworkX, so you can skip that
 * 20 points:\
   Create an estimation of the missing gender using the triangles in the network. You can use 
@@ -36,10 +33,10 @@ You can get these regardless of the rest of your points
 
 ### Additional instructions
 
-Make your life easier, and do the stuff for the extra points :)\
-Make sure your charts are nice! Colors, title, scales, axislabels all matter\
-Be sceptical about what you get! Make sure you do NOT include information that you shoulld not know in your estimations\
-Please ask your questions on a forum that everyone can see, but if you need a quick answer, throw me an email at 
+* Make your life easier, and do the stuff for the extra points :)\
+* Make sure your charts are nice! Colors, title, scales, axislabels all matter\
+* Be sceptical about what you get! Make sure you do NOT include information that you shoulld not know in your estimations\
+* Please ask your questions on a forum that everyone can see, but if you need a quick answer, throw me an email at 
 `karpatika92@gmail.com`
 
 #### Good Luck!
