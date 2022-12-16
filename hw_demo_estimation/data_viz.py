@@ -26,7 +26,6 @@ def plot_degree_distribution(G):
     ax.set_xlabel("k")
     ax.set_ylabel("count_k")
 
-
 def plot_age_distribution_by_gender(nodes):
     """Plot a histogram where the color represents gender"""
     plot_df = nodes[["AGE", "gender"]].copy(deep=True).astype(float)
@@ -96,6 +95,9 @@ Strenght of Social tie between:
 * (c) F-F pairs
 * (d) M-F pairs
 """
+
+
+
 def plot_age_relations_heatmap(edges_w_features):
     """Plot a heatmap that represents the distribution of edges"""
     #Original version of the heatmap, used as a blueprint for following versions with filtered dataframes by gender
@@ -170,8 +172,3 @@ def plot_age_relations_heatmap_M_F(edges_w_features):
     ax.set_xlabel("Age (Male)")
     ax.set_ylabel("Age (Female)")
     ax.set_title("(d) #connections per M-F pair")
-
-
-
-
-
