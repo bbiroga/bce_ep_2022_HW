@@ -74,6 +74,7 @@ def plot_node_neighbor_conn_by_gender(nodes,G):
     ax.set_ylabel("Neighbor Connectivity")
     ax.set_title("(b) Neighbor Connectivity")
 
+
 def plot_node_triadic_clos_by_gender(nodes, G):
     """Plots triadic cluster: the local clustering coefficient  (cc) of each user"""   
     nodes_w_triadic_clos = nodes 
@@ -98,6 +99,20 @@ Strenght of Social tie between:
 
 
 
+def plot_node_triadic_clos_by_gender(nodes, G):
+    """Plots triadic cluster: the local clustering coefficient  (cc) of each user"""   
+    nodes_w_triadic_clos = nodes 
+    nodes_w_triadic_clos = nodes_w_triadic_clos.assign(triadic_clos=nodes_w_triadic_clos.user_id.map(nx.clustering(G)))
+    nodes_w_triadic_clos['gender'].replace([0.0,1.0],['Female','Male'],inplace=True)
+
+    plot_df = (
+        nodes_w_triadic_clos.groupby(["AGE", "gender"]).agg({"triadic_clos": "mean"}).reset_index()
+    )
+    ax=sns.lineplot(data=plot_df, x="AGE", y="triadic_clos", hue='gender', palette=['red', 'blue'])
+    ax.set_xlabel("Age")
+    ax.set_ylabel("cc")
+    ax.set_title("(c) Triadic Closure")
+
 def plot_age_relations_heatmap(edges_w_features):
     """Plot a heatmap that represents the distribution of edges"""
     #Original version of the heatmap, used as a blueprint for following versions with filtered dataframes by gender
@@ -109,6 +124,7 @@ def plot_age_relations_heatmap(edges_w_features):
         index="AGE_x", columns="AGE_y", values="smaller_id"
     ).fillna(0)
     plot_df_heatmap_logged = np.log(plot_df_heatmap + 1)
+
     ax=sns.heatmap(plot_df_heatmap_logged, cmap='jet')
     ax.invert_yaxis()
     ax.set_xlabel("Age")
@@ -172,3 +188,7 @@ def plot_age_relations_heatmap_M_F(edges_w_features):
     ax.set_xlabel("Age (Male)")
     ax.set_ylabel("Age (Female)")
     ax.set_title("(d) #connections per M-F pair")
+
+    sns.heatmap(plot_df_heatmap_logged)
+
+

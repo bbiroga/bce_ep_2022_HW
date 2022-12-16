@@ -1,2 +1,2 @@
-# bce_ep_2021
-Repository for 2021 BCE Empirikus Pénzügyek
+# bce_ep_2022
+Repository for 2022 BCE Empirikus Pénzügyek
