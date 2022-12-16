@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import networkx as nx 
 
 def plot_degree_distribution(G):
     """Plot a degree distribution of a graph
@@ -33,10 +33,14 @@ def plot_age_distribution_by_gender(nodes):
     plot_df["gender"] = plot_df["gender"].replace({0.0: "woman", 1.0: "man"})
     sns.histplot(data=plot_df, x="AGE", hue="gender", bins=np.arange(0, 45, 5) + 15)
 
+"""Functions for Figure 3 charts:
+* Degree Centrality
+* Neighbor Connectivity
+* Triadic closure - local clustering
+"""
 
 def plot_node_degree_by_gender(nodes, G):
     """Plot the average of node degree across age and gender"""
-    # TODO: this could be generalized for different node level statistics as well!
     nodes_w_degree = nodes.set_index("user_id").merge(
         pd.Series(dict(G.degree)).to_frame(),
         how="left",
@@ -44,11 +48,46 @@ def plot_node_degree_by_gender(nodes, G):
         right_index=True,
     )
     nodes_w_degree = nodes_w_degree.rename({0: "degree"}, axis=1)
+    nodes_w_degree['gender'].replace([0.0,1.0],['Female','Male'],inplace=True)
     plot_df = (
         nodes_w_degree.groupby(["AGE", "gender"]).agg({"degree": "mean"}).reset_index()
     )
-    sns.lineplot(data=plot_df, x="AGE", y="degree", hue="gender")
+    
 
+    ax=sns.lineplot(data=plot_df, x="AGE", y="degree", hue="gender", palette=['red', 'blue'])
+    ax.set_xlabel("Age")
+    ax.set_ylabel("Degree")
+    ax.set_title("(a) Degree Centrality")
+
+def plot_node_neighbor_conn_by_gender(nodes,G):
+    """Plots neihgbor connectivity: the average degree of neighbors of a specific user"""
+    nodes_w_neighbor_conn=nodes
+    
+    #using the inbuil nx.average_neighbor_degree function, and mapping it to each node
+    nodes_w_neighbor_conn=nodes_w_neighbor_conn.assign(neighbor_conn=nodes_w_neighbor_conn.user_id.map(nx.average_neighbor_degree(G)))
+    nodes_w_neighbor_conn['gender'].replace([0.0,1.0],['Female','Male'],inplace=True)
+    
+    plot_df = (
+        nodes_w_neighbor_conn.groupby(["AGE", "gender"]).agg({"neighbor_conn": "mean"}).reset_index()
+    )
+    ax=sns.lineplot(data=plot_df, x="AGE", y="neighbor_conn", hue='gender', palette=['red', 'blue'])
+    ax.set_xlabel("Age")
+    ax.set_ylabel("Neighbor Connectivity")
+    ax.set_title("(b) Neighbor Connectivity")
+
+def plot_node_triadic_clos_by_gender(nodes, G):
+    """Plots triadic cluster: the local clustering coefficient  (cc) of each user"""   
+    nodes_w_triadic_clos = nodes 
+    nodes_w_triadic_clos = nodes_w_triadic_clos.assign(triadic_clos=nodes_w_triadic_clos.user_id.map(nx.clustering(G)))
+    nodes_w_triadic_clos['gender'].replace([0.0,1.0],['Female','Male'],inplace=True)
+
+    plot_df = (
+        nodes_w_triadic_clos.groupby(["AGE", "gender"]).agg({"triadic_clos": "mean"}).reset_index()
+    )
+    ax=sns.lineplot(data=plot_df, x="AGE", y="triadic_clos", hue='gender', palette=['red', 'blue'])
+    ax.set_xlabel("Age")
+    ax.set_ylabel("cc")
+    ax.set_title("(c) Triadic Closure")
 
 def plot_age_relations_heatmap(edges_w_features):
     """Plot a heatmap that represents the distribution of edges"""
@@ -66,3 +105,4 @@ def plot_age_relations_heatmap(edges_w_features):
     ).fillna(0)
     plot_df_heatmap_logged = np.log(plot_df_heatmap + 1)
     sns.heatmap(plot_df_heatmap_logged)
+
