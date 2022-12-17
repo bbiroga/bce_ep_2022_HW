@@ -90,7 +90,7 @@ def creating_figure_three(nodes, G):
     )
 
     # plotting the three charts
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(24, 8))
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(20, 6))
     sns.lineplot(
         data=plot_input_degree_centrality,
         x="AGE",
@@ -146,8 +146,7 @@ def creating_figure_five(edges_w_features):
     plot_df = edges_w_features.groupby(["gender_x", "gender_y", "AGE_x", "AGE_y"]).agg(
         {"smaller_id": "count"}
     )
-    plot_df_w_w = plot_df.loc[(0, 0)].reset_index()
-    plot_df_heatmap = plot_df_w_w.pivot_table(
+    plot_df_heatmap = plot_df.pivot_table(
         index="AGE_x", columns="AGE_y", values="smaller_id"
     ).fillna(0)
     plot_input_df_heatmap_logged = np.log(plot_df_heatmap + 1)
@@ -161,7 +160,6 @@ def creating_figure_five(edges_w_features):
     plot_df = edges_w_features_M_M.groupby(
         ["gender_x", "gender_y", "AGE_x", "AGE_y"]
     ).agg({"smaller_id": "count"})
-    # plot_df_w_w = plot_df.loc[(0, 0)].reset_index() -> not needed
     plot_df_heatmap = plot_df.pivot_table(
         index="AGE_x", columns="AGE_y", values="smaller_id"
     ).fillna(0)
@@ -196,7 +194,7 @@ def creating_figure_five(edges_w_features):
     plot_input_M_F_df_heatmap_logged = np.log(plot_df_heatmap + 1)
 
     # creating the 4 charts
-    fig, [[ax1, ax2], [ax3, ax4]] = plt.subplots(2, 2, figsize=(18, 8))
+    fig, [[ax1, ax2], [ax3, ax4]] = plt.subplots(2, 2, figsize=(14, 10))
     sns.heatmap(plot_input_df_heatmap_logged, cmap="jet", ax=ax1)
     ax1.invert_yaxis()
     ax1.set_xlabel("Age")
@@ -207,7 +205,7 @@ def creating_figure_five(edges_w_features):
     ax2.invert_yaxis()
     ax2.set_xlabel("Age (Male)")
     ax2.set_ylabel("Age (Male)")
-    ax2.set_title("(B) #connections per M-M pair")
+    ax2.set_title("(b) #connections per M-M pair")
 
     sns.heatmap(plot_input_F_F_df_heatmap_logged, cmap="jet", ax=ax3)
     ax3.invert_yaxis()
