@@ -52,7 +52,6 @@ def plot_node_degree_by_gender(nodes, G):
         nodes_w_degree.groupby(["AGE", "gender"]).agg({"degree": "mean"}).reset_index()
     )
     
-
     ax=sns.lineplot(data=plot_df, x="AGE", y="degree", hue="gender", palette=['red', 'blue'])
     ax.set_xlabel("Age")
     ax.set_ylabel("Degree")
@@ -62,7 +61,7 @@ def plot_node_neighbor_conn_by_gender(nodes,G):
     """Plots neihgbor connectivity: the average degree of neighbors of a specific user"""
     nodes_w_neighbor_conn=nodes
     
-    #using the inbuil nx.average_neighbor_degree function, and mapping it to each node
+    #using the inbuilt nx.average_neighbor_degree function, and mapping it to each node
     nodes_w_neighbor_conn=nodes_w_neighbor_conn.assign(neighbor_conn=nodes_w_neighbor_conn.user_id.map(nx.average_neighbor_degree(G)))
     nodes_w_neighbor_conn['gender'].replace([0.0,1.0],['Female','Male'],inplace=True)
     
@@ -89,6 +88,58 @@ def plot_node_triadic_clos_by_gender(nodes, G):
     ax.set_ylabel("cc")
     ax.set_title("(c) Triadic Closure")
 
+def creating_figure_three(nodes, G):
+    """This function merges the previous three functions, making it possible to plot the three charts for Figure 3 together"""
+    #(a) Degree Centrality
+    nodes_w_degree = nodes.set_index("user_id").merge(
+        pd.Series(dict(G.degree)).to_frame(),
+        how="left",
+        left_index=True,
+        right_index=True,
+    )
+    nodes_w_degree = nodes_w_degree.rename({0: "degree"}, axis=1)
+    nodes_w_degree['gender'].replace([0.0,1.0],['Female','Male'],inplace=True)
+    plot_input_degree_centrality = (
+        nodes_w_degree.groupby(["AGE", "gender"]).agg({"degree": "mean"}).reset_index()
+    )
+
+    #(b) Neighbor Connectivity
+    nodes_w_neighbor_conn=nodes
+    
+    #using the inbuil nx.average_neighbor_degree function, and mapping it to each node
+    nodes_w_neighbor_conn=nodes_w_neighbor_conn.assign(neighbor_conn=nodes_w_neighbor_conn.user_id.map(nx.average_neighbor_degree(G)))
+    nodes_w_neighbor_conn['gender'].replace([0.0,1.0],['Female','Male'],inplace=True)
+    
+    plot_input_neighbor_conn = (
+        nodes_w_neighbor_conn.groupby(["AGE", "gender"]).agg({"neighbor_conn": "mean"}).reset_index()
+    )
+
+    #(c) Triadic Closure
+    nodes_w_triadic_clos = nodes 
+    nodes_w_triadic_clos = nodes_w_triadic_clos.assign(triadic_clos=nodes_w_triadic_clos.user_id.map(nx.clustering(G)))
+    nodes_w_triadic_clos['gender'].replace([0.0,1.0],['Female','Male'],inplace=True)
+
+    plot_input_triadic_clos = (
+        nodes_w_triadic_clos.groupby(["AGE", "gender"]).agg({"triadic_clos": "mean"}).reset_index()
+    )
+
+    #plotting the three charts
+    fig, (ax1, ax2, ax3) = plt.subplots(1,3, figsize=(24,8))
+    sns.lineplot(data=plot_input_degree_centrality, x="AGE", y="degree", hue="gender", palette=['red', 'blue'], ax=ax1)
+    ax1.set_ylabel('Degree')
+    ax1.set_xlabel('Age')
+    ax1.set_title('(a) Degree Centrality')
+
+    sns.lineplot(data=plot_input_neighbor_conn, x="AGE", y="neighbor_conn", hue='gender', palette=['red', 'blue'], ax=ax2)
+    ax2.set_xlabel("Age")
+    ax2.set_ylabel("Neighbor Connectivity")
+    ax2.set_title("(b) Neighbor Connectivity")
+
+    sns.lineplot(data=plot_input_triadic_clos, x="AGE", y="triadic_clos", hue='gender', palette=['red', 'blue'], ax=ax3)
+    ax3.set_xlabel("Age")
+    ax3.set_ylabel("cc")
+    ax3.set_title("(c) Triadic Closure")
+
 """Functions for Figure 5 charts:
 Strenght of Social tie between:
 * (a) Total population
@@ -96,22 +147,6 @@ Strenght of Social tie between:
 * (c) F-F pairs
 * (d) M-F pairs
 """
-
-
-
-def plot_node_triadic_clos_by_gender(nodes, G):
-    """Plots triadic cluster: the local clustering coefficient  (cc) of each user"""   
-    nodes_w_triadic_clos = nodes 
-    nodes_w_triadic_clos = nodes_w_triadic_clos.assign(triadic_clos=nodes_w_triadic_clos.user_id.map(nx.clustering(G)))
-    nodes_w_triadic_clos['gender'].replace([0.0,1.0],['Female','Male'],inplace=True)
-
-    plot_df = (
-        nodes_w_triadic_clos.groupby(["AGE", "gender"]).agg({"triadic_clos": "mean"}).reset_index()
-    )
-    ax=sns.lineplot(data=plot_df, x="AGE", y="triadic_clos", hue='gender', palette=['red', 'blue'])
-    ax.set_xlabel("Age")
-    ax.set_ylabel("cc")
-    ax.set_title("(c) Triadic Closure")
 
 def plot_age_relations_heatmap(edges_w_features):
     """Plot a heatmap that represents the distribution of edges"""
